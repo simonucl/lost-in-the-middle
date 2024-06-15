@@ -106,13 +106,13 @@ def main(
                     did_format_warn = True
                 prompt = format_chat_prompt(tokenizer, prompt)
 
-            prompt_length = len(tokenizer(prompt)["input_ids"])
-            if max_prompt_length < prompt_length:
-                logger.info(
-                    f"Skipping prompt {prompt[:100]}... with length {prompt_length}, which "
-                    f"is greater than maximum prompt length {max_prompt_length}"
-                )
-                continue
+            # prompt_length = len(tokenizer(prompt)["input_ids"])
+            # if max_prompt_length < prompt_length:
+            #     logger.info(
+            #         f"Skipping prompt {prompt[:100]}... with length {prompt_length}, which "
+            #         f"is greater than maximum prompt length {max_prompt_length}"
+            #     )
+            #     continue
 
             prompts.append(prompt)
             examples.append(deepcopy(input_example))
@@ -131,7 +131,6 @@ def main(
         trust_remote_code=True,
         download_dir=hf_cache_path,
         load_format="pt",
-        max_num_batched_tokens=max_prompt_length,
     )
     sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=max_new_tokens)
     raw_responses = model.generate(prompts, sampling_params)
@@ -173,9 +172,6 @@ def format_chat_prompt(tokenizer
         {"role": "user", "content": message},
     ]
     return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    # TODO use chat tempalate with tokenizer
-    lines = ["<s>[INST] <<SYS>>", DEFAULT_SYSTEM_PROMPT, "<</SYS>>", "", f"{message} [/INST]"]
-    return "\n".join(lines)
 
 
 if __name__ == "__main__":

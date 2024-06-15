@@ -244,5 +244,6 @@ if __name__ == "__main__":
         args.max_prompt_length,
         args.hf_cache_path,
         args.output_path,
+        args.add_system_prompt,
     )
     logger.info("finished running %s", sys.argv[0])

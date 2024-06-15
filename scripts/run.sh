@@ -34,7 +34,7 @@ for model in "${MODELS[@]}"; do
     # python3 -u scripts/evaluate_qa_responses.py \
     #     --input-path qa_predictions/nq-open-oracle-${model}-oracle-predictions.jsonl.gz \
     #     --output-path qa_predictions/nq-open-oracle-${model}-oracle-predictions-scored.jsonl.gz
-    for gold_index in (0 4 9 14 19 24 29); do
+    for gold_index in 0 4 9 14 19 24 29; do
         echo "Running model: $model in open book setting with gold index: $gold_index"
         python3 -u scripts/get_qa_responses.py \
             --input-path qa_data/30_total_documents/nq-open-30_total_documents_gold_at_{gold_index}.jsonl.gz \

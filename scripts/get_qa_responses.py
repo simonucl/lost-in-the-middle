@@ -172,7 +172,7 @@ def format_chat_prompt(tokenizer
     messages = []
     if add_system_prompt:
         messages.append({"role": "system", "content": DEFAULT_SYSTEM_PROMPT})
-    messages.append({"role": "system", "content": ""})
+    messages.append({"role": "user", "content": message})
 
     return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
 

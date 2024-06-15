@@ -100,11 +100,11 @@ def main(
                     query_aware_contextualization=query_aware_contextualization,
                 )
 
-            if "chat" in model_name:
+            if ("chat" in model_name.lower()) or ("instruct" in model_name.lower()):
                 if did_format_warn is False:
                     logger.warning(f"Model {model_name} appears to be an chat model, applying chat formatting")
                     did_format_warn = True
-                prompt = format_chat_prompt(prompt)
+                prompt = format_chat_prompt(tokenizer, prompt)
 
             prompt_length = len(tokenizer(prompt)["input_ids"])
             if max_prompt_length < prompt_length:
@@ -158,7 +158,8 @@ def chunks(lst, n):
         yield lst[i : i + n]
 
 
-def format_chat_prompt(message: str):
+def format_chat_prompt(tokenizer
+                       , message: str):
     DEFAULT_SYSTEM_PROMPT = (
         "You are a helpful, respectful and honest assistant. "
         "Always answer as helpfully as possible, while being safe. "
@@ -167,6 +168,11 @@ def format_chat_prompt(message: str):
         "why instead of answering something not correct. If you don't know the answer "
         "to a question, please don't share false information."
     )
+    messages = [
+        {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
+        {"role": "user", "content": message},
+    ]
+    return tokenizer.apply_chat_template(messages)
     # TODO use chat tempalate with tokenizer
     lines = ["<s>[INST] <<SYS>>", DEFAULT_SYSTEM_PROMPT, "<</SYS>>", "", f"{message} [/INST]"]
     return "\n".join(lines)
@@ -180,14 +186,6 @@ if __name__ == "__main__":
         "--model",
         help="Model to use in generating responses",
         required=True,
-        choices=[
-            "meta-llama/Llama-2-7b-hf",
-            "meta-llama/Llama-2-13b-hf",
-            "meta-llama/Llama-2-70b-hf",
-            "meta-llama/Llama-2-7b-chat-hf",
-            "meta-llama/Llama-2-13b-chat-hf",
-            "meta-llama/Llama-2-70b-chat-hf",
-        ],
     )
     parser.add_argument("--temperature", help="Temperature to use in generation", type=float, default=0.0)
     parser.add_argument("--top-p", help="Top-p to use in generation", type=float, default=1.0)

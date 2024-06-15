@@ -172,7 +172,7 @@ def format_chat_prompt(tokenizer
         {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
         {"role": "user", "content": message},
     ]
-    return tokenizer.apply_chat_template(messages)
+    return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     # TODO use chat tempalate with tokenizer
     lines = ["<s>[INST] <<SYS>>", DEFAULT_SYSTEM_PROMPT, "<</SYS>>", "", f"{message} [/INST]"]
     return "\n".join(lines)

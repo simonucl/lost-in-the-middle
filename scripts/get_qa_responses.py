@@ -51,6 +51,7 @@ def main(
     max_prompt_length,
     hf_cache_path,
     output_path,
+    add_system_prompt,
 ):
     # Create directory for output path if it doesn't exist.
     pathlib.Path(output_path).parent.mkdir(parents=True, exist_ok=True)
@@ -104,7 +105,7 @@ def main(
                 if did_format_warn is False:
                     logger.warning(f"Model {model_name} appears to be an chat model, applying chat formatting")
                     did_format_warn = True
-                prompt = format_chat_prompt(tokenizer, prompt)
+                prompt = format_chat_prompt(tokenizer, prompt, add_system_prompt)
 
             # prompt_length = len(tokenizer(prompt)["input_ids"])
             # if max_prompt_length < prompt_length:
@@ -128,9 +129,6 @@ def main(
     model = LLM(
         model=model_name,
         tensor_parallel_size=num_gpus,
-        trust_remote_code=True,
-        download_dir=hf_cache_path,
-        load_format="pt",
     )
     sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=max_new_tokens)
     raw_responses = model.generate(prompts, sampling_params)
@@ -158,7 +156,9 @@ def chunks(lst, n):
 
 
 def format_chat_prompt(tokenizer
-                       , message: str):
+                       , message: str
+                       , add_system_prompt : bool=False
+                       ) -> str:
     DEFAULT_SYSTEM_PROMPT = (
         "You are a helpful, respectful and honest assistant. "
         "Always answer as helpfully as possible, while being safe. "
@@ -167,10 +167,11 @@ def format_chat_prompt(tokenizer
         "why instead of answering something not correct. If you don't know the answer "
         "to a question, please don't share false information."
     )
-    messages = [
-        {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
-        {"role": "user", "content": message},
-    ]
+    messages = []
+    if add_system_prompt:
+        messages.append({"role": "system", "content": DEFAULT_SYSTEM_PROMPT})
+    messages.append({"role": "system", "content": ""})
+
     return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
 
 
@@ -218,6 +219,12 @@ if __name__ == "__main__":
         type=int,
         default=4096,
     )
+    parser.add_argument(
+        '--add_system_prompt',
+        action='store_true',
+        help='Add a system prompt to the beginning of the chat prompt',
+    )
+
     args = parser.parse_args()
 
     logger.info("running %s", " ".join(sys.argv))

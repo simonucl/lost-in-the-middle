@@ -131,6 +131,7 @@ def main(
     model = LLM(
         model=model_name,
         tensor_parallel_size=num_gpus,
+        gpu_memory_utilization=0.90
     )
     sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=max_new_tokens)
     raw_responses = model.generate(prompts, sampling_params)

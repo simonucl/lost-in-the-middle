@@ -37,7 +37,7 @@ for model in "${MODELS[@]}"; do
     for gold_index in 0 4 9 14 19 24 29; do
         echo "Running model: $model in open book setting with gold index: $gold_index"
         python3 -u scripts/get_qa_responses.py \
-            --input-path qa_data/30_total_documents/nq-open-30_total_documents_gold_at_{gold_index}.jsonl.gz \
+            --input-path qa_data/30_total_documents/nq-open-30_total_documents_gold_at_${gold_index}.jsonl.gz \
             --num-gpus 2 \
             --max-new-tokens 100 \
             --model $model \

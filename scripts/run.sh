@@ -2,6 +2,8 @@ MODELS=(
     /mnt/nfs/public/hf/models/meta-llama/Meta-Llama-3-8B-Instruct
     mistralai/Mistral-7B-Instruct-v0.3
     microsoft/Phi-3-mini-128k-instruct
+    gradientai/Llama-3-8B-Instruct-262k
+    gradientai/Llama-3-8B-Instruct-Gradient-1048k
 )
 
 # Close book
@@ -13,6 +15,7 @@ for model in "${MODELS[@]}"; do
         --max-new-tokens 100 \
         --closedbook \
         --model $model \
+        --add_system_prompt \
         --output-path qa_predictions/nq-open-oracle-${model}-closedbook-predictions.jsonl.gz
 
     python3 -u scripts/evaluate_qa_responses.py \
@@ -25,6 +28,7 @@ for model in "${MODELS[@]}"; do
     --max-new-tokens 100 \
     --num-gpus 2 \
     --model $model \
+    --add_system_prompt \
     --output-path qa_predictions/nq-open-oracle-${model}-oracle-predictions.jsonl.gz
 
     python3 -u scripts/evaluate_qa_responses.py \

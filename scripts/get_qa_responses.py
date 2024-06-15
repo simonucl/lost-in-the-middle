@@ -53,6 +53,8 @@ def main(
     output_path,
     add_system_prompt,
 ):
+    if "mistral" in model_name:
+        add_system_prompt = False
     # Create directory for output path if it doesn't exist.
     pathlib.Path(output_path).parent.mkdir(parents=True, exist_ok=True)
 

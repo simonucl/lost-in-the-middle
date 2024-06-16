@@ -48,17 +48,43 @@ for model in "${MODELS[@]}"; do
     #         --input-path qa_predictions/nq-open-oracle-${model}-openbook-gold-index-${gold_index}-predictions.jsonl.gz \
     #         --output-path qa_predictions/nq-open-oracle-${model}-openbook-gold-index-${gold_index}-predictions-scored.jsonl.gz
 
+    # echo "Running model: $model in orcale doc setting"
+    # python3 -u ./scripts/get_qa_responses.py \
+    # --input-path qa_data/nq-open-oracle-doc.jsonl.gz \
+    # --max-new-tokens 100 \
+    # --num-gpus 2 \
+    # --model $model \
+    # --add_system_prompt \
+    # --output-path qa_predictions/nq-open-oracle-${model}-oracle-doc-predictions.jsonl.gz
+
+    # python3 -u scripts/evaluate_qa_responses.py \
+    #     --input-path qa_predictions/nq-open-oracle-${model}-oracle-doc-predictions.jsonl.gz \
+    #     --output-path qa_predictions/nq-open-oracle-${model}-oracle-doc-predictions-scored.jsonl.gz
+
     echo "Running model: $model in orcale doc setting"
     python3 -u ./scripts/get_qa_responses.py \
-    --input-path qa_data/nq-open-oracle-doc.jsonl.gz \
+    --input-path qa_data/nq-open-2048_oracle_docs.jsonl.gz \
     --max-new-tokens 100 \
     --num-gpus 2 \
     --model $model \
     --add_system_prompt \
-    --output-path qa_predictions/nq-open-oracle-${model}-oracle-doc-predictions.jsonl.gz
+    --output-path qa_predictions/nq-open-oracle-${model}-2048-oracle-doc-predictions.jsonl.gz
 
     python3 -u scripts/evaluate_qa_responses.py \
-        --input-path qa_predictions/nq-open-oracle-${model}-oracle-doc-predictions.jsonl.gz \
-        --output-path qa_predictions/nq-open-oracle-${model}-oracle-doc-predictions-scored.jsonl.gz
+        --input-path qa_predictions/nq-open-oracle-${model}-2048-oracle-doc-predictions.jsonl.gz \
+        --output-path qa_predictions/nq-open-oracle-${model}-2048-oracle-doc-predictions-scored.jsonl.gz
+
+    echo "Running model: $model in orcale doc setting"
+    python3 -u ./scripts/get_qa_responses.py \
+    --input-path qa_data/nq-open-4096_oracle_docs.jsonl.gz \
+    --max-new-tokens 100 \
+    --num-gpus 2 \
+    --model $model \
+    --add_system_prompt \
+    --output-path qa_predictions/nq-open-oracle-${model}-4096-oracle-doc-predictions.jsonl.gz
+
+    python3 -u scripts/evaluate_qa_responses.py \
+        --input-path qa_predictions/nq-open-oracle-${model}-4096-oracle-doc-predictions.jsonl.gz \
+        --output-path qa_predictions/nq-open-oracle-${model}-4096-oracle-doc-predictions-scored.jsonl.gz
     done
 done

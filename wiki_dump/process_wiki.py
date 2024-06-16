@@ -23,7 +23,8 @@ def process_wiki_dpr_id(wiki_dpr_id):
     df = pd.read_parquet(f"cache/data/psgs_w100/nq/train-{wiki_dpr_id}-of-00157.parquet")
     df['length'] = df['text'].apply(enc.encode).apply(len)
 
-    for max_length in [2048, 4096, -1]:
+    # for max_length in [2048, 4096, -1]:
+    for max_length in [-1]:
         title2id = {}
         title = ""
         ids = []
@@ -66,9 +67,9 @@ def process_wiki_dpr_id(wiki_dpr_id):
                     segment_ids = []
                     length = 0
 
-                segment_texts.append(row['text'])
-                segment_ids.append(row['id'])
-                length += row['length']
+            segment_texts.append(row['text'])
+            segment_ids.append(row['id'])
+            length += row['length']
 
         if title != "":
             title2id[title] = ids

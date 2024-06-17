@@ -177,8 +177,11 @@ if __name__ == "__main__":
 
 """
 python3 -u ./scripts/make_qa_data_from_retrieval_results.py \
-    --input-path wiki_dump/4096_new_ret_docs.jsonl \
+    --input-path wiki_dump/2048_new_ret_docs.jsonl \
     --num-total-documents 30 \
     --gold-index 0 4 9 14 19 24 29 \
     --output-path qa_data/30_total_documents/
 """
+
+# huggingface-cli upload simonycl/temp_file . ls_rag/30_total_documents/ --include="nq-open-20-4096_total_documents_gold*"
+# huggingface-cli download simonycl/temp_file --include="ls_rag/30_total_documents/nq-open-20-4096_total_documents_gold*" --local-dir "qa_data/30_total_documents/"

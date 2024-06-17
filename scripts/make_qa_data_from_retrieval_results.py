@@ -88,7 +88,7 @@ def main(input_path, num_total_documents, gold_index, output_path):
     for gold_i in gold_index:
         with xopen(output_path.format(num_total_documents, max_length, gold_i), "w") as fout:
             for qa_retrieval_result, distractor_docs, gold_chunk in distractor_docs_and_gold:
-                ctxs = distractor_docs
+                ctxs = deepcopy(distractor_docs)
                 ctxs.insert(gold_i, gold_chunk)
                 qa_retrieval_result["ctxs"] = ctxs
                 fout.write(json.dumps(qa_retrieval_result) + "\n")
@@ -178,7 +178,7 @@ if __name__ == "__main__":
 """
 python3 -u ./scripts/make_qa_data_from_retrieval_results.py \
     --input-path wiki_dump/4096_new_ret_docs.jsonl \
-    --num-total-documents 20 \
-    --gold-index 0 4 9 14 19 \
+    --num-total-documents 30 \
+    --gold-index 0 4 9 14 19 24 29 \
     --output-path qa_data/30_total_documents/
 """
